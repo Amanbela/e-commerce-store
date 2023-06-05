@@ -1,0 +1,20 @@
+product=[
+  {
+    Brand:
+    Size:
+    Name:
+    Price:
+  }
+  {
+    Brand:
+    Size:
+    Name:
+    Price:
+  }
+  {
+    Brand:
+    Size:
+    Name:
+    Price:
+  }
+]
