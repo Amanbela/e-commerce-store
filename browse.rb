@@ -3,8 +3,9 @@ require_relative 'search'
 
 class Browse
 
-  def initialize(arr)
+  def initialize(arr,current_log)
   @arr=arr
+  @current_log=current_log
   @hash={}
   end
   def product_list
@@ -46,48 +47,63 @@ class Browse
     @arr.push(@hash)
      puts @arr  
   end
-   def Add_product
-     puts"Enter the product name:"
-     name=gets.chomp.to_s
-     if name.empty?
-      puts "Product name cannot be empty."
-      return 
+  def add_product
+    attempts = 3
+  
+    begin
+      puts "Enter the product name:"
+      name = gets.chomp.to_s.strip
+      attempts -= 1
+  
+      if name.empty?
+        puts "Product name cannot be empty."
+        raise "InvalidProductInput"
+      end
+    rescue
+      if attempts.zero?
+        puts "Maximum attempts reached. Returning without adding the product."
+        return
+      end
+  
+      retry
     end
-     
-      @hash["Name"]=name
-      puts"Enter the Brand name:"
-      brand=gets.chomp.to_s
+  
+    @hash["Name"] = name
+  
+    begin
+      puts "Enter the Brand name:"
+      brand = gets.chomp.to_s.strip
+  
       if brand.empty?
         puts "Brand name cannot be empty."
-        return 
+        raise "InvalidProductInput"
       end
-    
-       
-      @hash["Brand"]=brand
-      puts"Enter the price of product:"
-      price=gets.chomp.to_i
-      
+    rescue
+      puts "Returning without adding the product."
+      return
+    end
+  
+    @hash["Brand"] = brand
+  
+    begin
+      puts "Enter the price of the product:"
+      price = gets.chomp.to_i
+  
       if price <= 0
         puts "Price must be a positive number."
-        return # Stop further execution of the method
+        raise "InvalidProductInput"
       end
-      @hash["Price"]=price
-      
-        @arr.push(@hash)
-     puts @arr
+    rescue
+      puts "Returning without adding the product."
+      return
     end
-    
-
-   def display_product
   
-    puts "  Name          Brand          Price"
-
-    puts"----------------------------------------------------------------------"
-    @arr.each do|product|
-      puts "#{product['Name']}   #{product['Brand']}   #{product['Price']}"
-    end
-    puts"----------------------------------------------------------------------"
+    @hash["Price"] = price
+  
+    @arr.push(@hash)
+    puts @arr
   end
+  
 end
 
 

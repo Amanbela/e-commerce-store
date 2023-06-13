@@ -5,41 +5,50 @@ require_relative 'browse'
 class Cart
   attr_accessor :product, :product_price, :value, :number_of_quantity
 
-  def initialize(arr, cart)
+  def initialize(arr, cart,current_log)
     @arr = arr
     @cart = cart
+    @current_log=current_log
   end
 
-  def add_to_cart
-    search_name_index
+ def add_to_cart
+    attempts = 0
+    while attempts < 3
+      search_name_index
 
-    if @index.nil?
-      puts "Product not found."
-      return
+      if @index.nil?
+        #puts "Product not found."
+        attempts += 1
+        next
+      end
+
+      @product = @arr[@index]["Name"]
+      @product_price = @arr[@index]["Price"]
+
+      puts "#{@product}"
+      puts "#{@product_price}"
+      puts "Enter the Product Quantity"
+      @number_of_quantity = gets.chomp.to_i
+
+      if @number_of_quantity <= 0
+        puts "Invalid quantity. Please enter a positive number."
+        attempts += 1
+        next
+      end
+
+      cart_item = {
+        "product": @product,
+        "price": @product_price,
+        "quantity": @number_of_quantity
+      }
+
+      @cart.push(cart_item)
+
+      puts "Product Added Successfully..."
+      return  # Exit the method after successful addition
     end
 
-    @product = @arr[@index]["Name"]
-    @product_price = @arr[@index]["Price"]
-
-    puts "#{@product}"
-    puts "#{@product_price}"
-    puts "Enter the Product Quantity"
-    @number_of_quantity = gets.chomp.to_i
-
-    if @number_of_quantity <= 0
-      puts "Invalid quantity. Please enter a positive number."
-      return
-    end
-
-    cart_item = {
-      "product": @product,
-      "price": @product_price,
-      "quantity": @number_of_quantity
-    }
-
-    @cart.push(cart_item)
-
-    puts "Product Added Successfully..."
+    puts "Exceeded the maximum number of attempts."
   end
 
   def display_cart
@@ -56,19 +65,20 @@ class Cart
     puts "Enter your credit card number:"
     creditcard = gets.chomp.to_i
 
-    puts "Enter the expiration date (MM/YYYY):"
+    puts "Enter the expiration date (MM/YYYYs):"
     month = gets.chomp
     year = gets.chomp
 
     puts "Enter the CVV:"
     cvv = gets.chomp.to_i
 
-    if month =~ /^(0[1-9]|1[0-2])$/ && year =~ /^(20[2-9][3-9]|50[2-9][3-9])$/
+    if month =~ /^(0[1-9]|1[0-2])$/ && year =~ /^(20[2-9][3-9]|50[2-9][3-9])$/ && cvv.to_s.length == 3
       puts "Credit Card Number: #{creditcard}"
       puts "Expiration date: #{month}/#{year}"
       puts "CVV: #{cvv}"
-      calculate_total_amount
-      generate_order_id
+     # calculate_total_amount
+      #generate_order_id
+    
       puts "Order Placed Successfully..."
     else
       puts "Invalid card expiration date or CVV."
@@ -76,7 +86,7 @@ class Cart
   end
  
   def order_history
-    if @cart.empty?
+    if @cart.empty? 
       puts "No order history. Please check out first."
     else
       generate_order_id

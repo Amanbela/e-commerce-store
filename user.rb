@@ -1,113 +1,73 @@
 
 require_relative 'search'
-require_relative'browse'
+require_relative 'browse'
 require_relative 'addtocart'
 require_relative 'product'
 require_relative 'addtocart'
+require_relative 'logout'
 
-class User2
-  def initialize
+class User
+  def initialize(current_log)
     @arr=[]
     @cart=[]
-  
-    end
+    @current_log=current_log
+  end
     
-  def user1
+  def user_menu
     
     loop do
-      cart=Cart.new(@arr,@cart)
-      listing=Browse.new(@arr)
-   
-     puts"--------------------------------------"
-     puts"------welcome to E-commerce Store-----"
-     puts" welcome user good day"
-     puts"2. add the product"
-     puts"3. Browse Products"
-     puts"4. Search Products"
-     puts"5. Add to Cart"
-     puts"6. View Cart"
-     puts"7. Checkout"
-     puts"8. View Order History"
-     puts"9. csv file export"
-   
-     puts"10. Exit"
-    
-     print"Enter your choice:"
-     choice=gets.chomp.to_i
-
-     case choice
-     when 2
-      listing.Add_product
-     when 3
+      cart=Cart.new(@arr,@cart,@current_log)
      
-     if $login==true
-     listing.product_list
-     else 
-      puts "first login than use function"
-     end
-
-     when 4
-      
-      search=Search.new(@arr)
+   
+      puts"--------------------------------------"
+      puts"------welcome to E-commerce Store-----"
+      puts" welcome user good day"
+      puts"1. add the product"
+      puts"2. Browse Products"
+      puts"3. Search Products"
+      puts"4. Add to Cart"
+      puts"5. View Cart"
+      puts"6. Checkout"
+      puts"7. View Order History"
+      puts"8. csv file export"
+   
+      puts"9. Logout"
     
-     if $login==true
-     search.search
-     else
-      puts "first login than use function"
-     end
+      print"Enter your choice:"
+      choice=gets.chomp.to_i
 
-     when 5
-     
-     if $login==true
-     cart.add_to_cart
-     else 
-      puts" first login than use function"
-     end
+      case choice
+       when 1
+        Browse.new(@arr,@current_log).add_product
+       when 2  
+        listing=Browse.new(@arr,@current_log).product_list
+       when 3
+         search=Search.new(@arr)
+         search.search
+       when 4
+        cart.add_to_cart
 
-     when 6 
-      #cart=Cart.new(@arr)
-      if $login==true
+       when 5 
          cart.display_cart
-        else
-        puts"first login than use function"
-      end
 
-      when 7
-       #cart=Cart.new(@arr)
-      if $login=true
-       cart.check_out
+       when 6
+         cart.check_out
+    
+       when 7
+         cart.order_history
+         
+       when 8
+    
+         exp=ExportCsv.new(@arr)
+         exp.export
+         
+       when 9
+        Logout.new(@current_log).log_out
+       Exit
       else
-       puts "first login than use function"
-      end
-    
-      when 8
-       #cart=Cart.new(@arr)
-       if $login==true
-        cart.order_history
-       else
-        puts"first login than use function"
-      end
-      when 9
-    
-       exp=ExportCsv.new(@arr)
-       if $login==true
-       exp.Export
-       else
-        puts"first input the data in array then use function"
-     end
-
-
-      when 10
-       $login=false
-       exit
-       else
-       puts "Invalid choice please try agin"
+        puts "Invalid choice please try agin"
      
       end
-    end
-
-
-   
+    end 
   end
-
 end
